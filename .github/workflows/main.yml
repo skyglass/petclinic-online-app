@@ -32,8 +32,8 @@ jobs:
           distribution: 'adopt'
 
       # Step that does that actual cache save and restore
-      - name: Cache Maven Repository
-        uses: actions/cache@v1
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
