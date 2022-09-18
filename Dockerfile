@@ -1,3 +1,3 @@
 FROM openjdk:17-alpine
-COPY target/petclinic-online-*.jar app.jar
-CMD java -jar app.jar
+ADD target/petclinic-online-*.jar app.jar
+ENTRYPOINT ["/bin/bash", "-c", "java", "-jar", "/app.jar"]
