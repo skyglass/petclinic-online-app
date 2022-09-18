@@ -30,6 +30,7 @@ jobs:
         with:
           java-version: 17
           distribution: 'adopt'
+          cache: 'maven'
 
       - name: Build a package
         run: mvn clean install package
