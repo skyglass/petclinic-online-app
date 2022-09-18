@@ -1,3 +1,3 @@
 FROM openjdk:17-alpine
-ADD *.jar target/app.jar
+COPY target/petclinic-online-*.jar app.jar
 ENTRYPOINT java -jar app.jar
