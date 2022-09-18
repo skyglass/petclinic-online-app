@@ -52,7 +52,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/petclinic-online:latest, ${{ secrets.DOCKER_USERNAME }}/petclinic-online:${{ github.run_number }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/petclinic-online:latest, ${{ secrets.DOCKER_USERNAME }}/petclinic-online:${{ env.RELEASE_VERSION }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
