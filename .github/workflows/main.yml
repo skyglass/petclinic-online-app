@@ -29,7 +29,15 @@ jobs:
         with:
           java-version: 17
           distribution: 'adopt'
-          cache: maven
+
+      # Step that does that actual cache save and restore
+      - uses: actions/cache@v1
+        name: Cache Maven Repository
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
       - name: Build a package
         run: mvn clean install package
