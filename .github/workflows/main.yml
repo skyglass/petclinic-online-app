@@ -3,7 +3,7 @@
 name: CICD
 
 env:
-  MAVEN_OPTS: "-Dmaven.repo.local=${{ github.workspace }}/repository"
+  MAVEN_OPTS: "-Dmaven.repo.local=${{ github.workspace }}/.m2/repository"
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
