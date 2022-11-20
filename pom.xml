@@ -325,7 +325,7 @@
             </executions>
             <configuration>
               <inputPath>${basedir}/src/main/scss/</inputPath>
-              <outputPath>${basedir}/src/main/resources/static/resources/css/</outputPath>
+              <outputPath>${basedir}/src/main/resources/resources/css/</outputPath>
               <includePath>${project.build.directory}/webjars/META-INF/resources/webjars/bootstrap/${webjars-bootstrap.version}/scss/</includePath>
             </configuration>
           </plugin>
