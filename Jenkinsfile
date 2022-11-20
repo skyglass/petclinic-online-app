@@ -1,33 +1,61 @@
+
+
 pipeline {
-  agent any
-    tools {
-      maven 'maven3'
-                 jdk 'JDK8'
-    }
-    stages {      
-        stage('Build maven ') {
-            steps { 
-                    sh 'pwd'      
-                    sh 'mvn  clean install package'
+    agent any
+       triggers {
+        pollSCM "* * * * *"
+       }
+    stages {
+        stage('Build Application') { 
+            steps {
+                echo '=== Building Petclinic Application ==='
+                sh 'mvn -B -DskipTests clean package' 
             }
         }
-        
-        stage('Copy Artifact') {
-           steps { 
-                   sh 'pwd'
-		   sh 'cp -r target/*.jar docker'
-           }
+        stage('Test Application') {
+            steps {
+                echo '=== Testing Petclinic Application ==='
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
         }
-         
-        stage('Build docker image') {
-           steps {
-               script {         
-                 def customImage = docker.build('skyglass/petclinic', "./docker")
-                 docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                 customImage.push("${env.BUILD_NUMBER}")
-                 }                     
-           }
+        stage('Build Docker Image') {
+            when {
+                branch 'master'
+            }
+            steps {
+                echo '=== Building Petclinic Docker Image ==='
+                script {
+                    app = docker.build("skyglass/petclinic-spinnaker-jenkins")
+                }
+            }
         }
-	  }
+        stage('Push Docker Image') {
+            when {
+                branch 'master'
+            }
+            steps {
+                echo '=== Pushing Petclinic Docker Image ==='
+                script {
+                    GIT_COMMIT_HASH = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
+                    SHORT_COMMIT = "${GIT_COMMIT_HASH[0..7]}"
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerHubCredentials') {
+                        app.push("$SHORT_COMMIT")
+                        app.push("latest")
+                    }
+                }
+            }
+        }
+        stage('Remove local images') {
+            steps {
+                echo '=== Delete the local docker images ==='
+                sh("docker rmi -f skyglass/petclinic-spinnaker-jenkins:latest || :")
+                sh("docker rmi -f skyglass/petclinic-spinnaker-jenkins:$SHORT_COMMIT || :")
+            }
+        }
     }
 }
