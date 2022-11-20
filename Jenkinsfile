@@ -30,7 +30,7 @@ pipeline {
             steps {
                 echo '=== Building Petclinic Docker Image ==='
                 script {
-                    app = docker.build("skyglass/petclinic-spinnaker-jenkins")
+                    app = docker.build("skyglass/petclinic-online")
                 }
             }
         }
@@ -53,8 +53,8 @@ pipeline {
         stage('Remove local images') {
             steps {
                 echo '=== Delete the local docker images ==='
-                sh("docker rmi -f skyglass/petclinic-spinnaker-jenkins:latest || :")
-                sh("docker rmi -f skyglass/petclinic-spinnaker-jenkins:$SHORT_COMMIT || :")
+                sh("docker rmi -f skyglass/petclinic-online:latest || :")
+                sh("docker rmi -f skyglass/petclinic-online:$SHORT_COMMIT || :")
             }
         }
     }
